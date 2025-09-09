@@ -1,0 +1,3248 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credora Wealth Management - Enhanced Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #10b981;
+            --text-color: #374151;
+            --text-color-dark: #1f2937;
+            --light-bg: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --success-color: #059669;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
+```
+    [data-theme="dark"] {
+        --text-color: #e5e7eb;
+        --text-color-dark: #f9fafb;
+        --light-bg: #1f2937;
+        --card-bg: #111827;
+        --border-color: #374151;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    
+    body {
+        background-color: var(--light-bg);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    /* Header Styles */
+    header {
+        background-color: var(--card-bg);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 0;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .logo-icon {
+        background: var(--primary-color);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .top-actions {
+        display: flex;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+    }
+    
+    .notification-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--light-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+    }
+    
+    .user-profile:hover {
+        background: var(--light-bg);
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+    
+    .profile-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 280px;
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 1rem 0;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .profile-dropdown.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .dropdown-item {
+        padding: 0.8rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .dropdown-item:hover {
+        background: var(--light-bg);
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 0.5rem 0;
+    }
+    
+    .login-info {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
+        color: #6b7280;
+        line-height: 1.4;
+    }
+    
+    /* Theme Toggle */
+    .theme-toggle {
+        width: 44px;
+        height: 24px;
+        background: var(--border-color);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        padding: 0 3px;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+    
+    .theme-toggle-handle {
+        width: 18px;
+        height: 18px;
+        background: var(--card-bg);
+        border-radius: 50%;
+        transform: translateX(0);
+    }
+    
+    [data-theme="dark"] .theme-toggle-handle {
+        transform: translateX(20px);
+    }
+    
+    /* Crypto Ticker */
+    .crypto-ticker {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 0;
+        overflow: hidden;
+        position: relative;
+        height: 40px;
+    }
+    
+    .ticker-content {
+        display: flex;
+        position: absolute;
+        white-space: nowrap;
+        animation: tickerScroll 30s linear infinite;
+    }
+    
+    .ticker-item {
+        margin-right: 3rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .ticker-item span {
+        margin: 0 0.5rem;
+    }
+    
+    .ticker-up {
+        color: var(--success-color);
+    }
+    
+    .ticker-down {
+        color: var(--error-color);
+    }
+    
+    /* Navigation Tabs */
+    .nav-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin: 2rem 0 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+    }
+    
+    .nav-tab {
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px 8px 0 0;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-color);
+        text-decoration: none;
+    }
+    
+    .nav-tab.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    /* Dashboard Content */
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    /* Wallet Overview */
+    .wallet-overview {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .total-balance {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .balance-label {
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+    
+    .balance-amount {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .assets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .asset-card {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .asset-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .asset-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        overflow: hidden;
+    }
+    
+    .asset-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .asset-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .asset-balance {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .asset-value {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        border: none;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: var(--primary-dark);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+    }
+    
+    .btn-outline:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-success {
+        background: var(--success-color);
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #047857;
+    }
+    
+    /* Chart Container */
+    .chart-container {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        height: 300px;
+    }
+    
+    /* Investment Plans */
+    .plans-container {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .plans-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .plans-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .plan-card {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    
+    .plan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .plan-card.featured {
+        border: 2px solid var(--primary-color);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .plan-card.featured::before {
+        content: 'POPULAR';
+        position: absolute;
+        top: 15px;
+        right: -30px;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.3rem 3rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transform: rotate(45deg);
+    }
+    
+    .plan-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .plan-roi {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--success-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .plan-period {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+    
+    .plan-features {
+        list-style: none;
+        margin: 1.5rem 0;
+        text-align: left;
+    }
+    
+    .plan-features li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .plan-features li:last-child {
+        border-bottom: none;
+    }
+    
+    .plan-features i {
+        color: var(--success-color);
+    }
+    
+    /* Portfolio Card */
+    .portfolio-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .portfolio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .portfolio-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .portfolio-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .portfolio-item {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+    
+    .portfolio-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+    
+    .portfolio-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .portfolio-value.roi {
+        color: var(--success-color);
+    }
+    
+    .countdown-timer {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--warning-color);
+        margin-top: 0.5rem;
+    }
+    
+    /* NEW FEATURES STYLES */
+    
+    /* Achievements System */
+    .achievements-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .achievements-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .achievements-icon {
+        font-size: 1.8rem;
+        color: var(--warning-color);
+        margin-right: 1rem;
+    }
+    
+    .achievements-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .achievement {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+    
+    .achievement.locked {
+        opacity: 0.6;
+    }
+    
+    .achievement-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--warning-color);
+    }
+    
+    .achievement.locked .achievement-icon {
+        color: #6b7280;
+    }
+    
+    .achievement h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color-dark);
+    }
+    
+    .achievement p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .progress-bar {
+        height: 6px;
+        background: var(--border-color);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    
+    .progress {
+        height: 100%;
+        background: var(--success-color);
+        border-radius: 3px;
+    }
+    
+    /* Daily Rewards */
+    .daily-rewards {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .rewards-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .rewards-icon {
+        font-size: 1.8rem;
+        color: var(--success-color);
+        margin-right: 1rem;
+    }
+    
+    .rewards-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .rewards-calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .reward-day {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1rem 0.5rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .reward-day.claimed {
+        background: var(--success-color);
+        color: white;
+    }
+    
+    .reward-day.today {
+        border: 2px solid var(--primary-color);
+    }
+    
+    .reward-day span {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .reward-day i {
+        font-size: 1.2rem;
+    }
+    
+    /* Portfolio Allocation */
+    .allocation-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .allocation-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .allocation-icon {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-right: 1rem;
+    }
+    
+    .allocation-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .chart-container-pie {
+        height: 200px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .allocation-legends {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .color-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .color-dot.usdt {
+        background: #26a17b;
+    }
+    
+    .color-dot.trx {
+        background: #ef0027;
+    }
+    
+    .color-dot.btc {
+        background: #f7931a;
+    }
+    
+    .color-dot.other {
+        background: #627eea;
+    }
+    
+    /* ROI Simulator */
+    .simulator-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .simulator-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .simulator-icon {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-right: 1rem;
+    }
+    
+    .simulator-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .simulator-controls {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border-color);
+        outline: none;
+        -webkit-appearance: none;
+    }
+    
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+    }
+    
+    .slider-value {
+        text-align: right;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .simulation-result {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .simulation-result h4 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color-dark);
+    }
+    
+    #projectedProfit {
+        color: var(--success-color);
+    }
+    
+    /* Price Alerts */
+    .alerts-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .alerts-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alerts-icon {
+        font-size: 1.8rem;
+        color: var(--error-color);
+        margin-right: 1rem;
+    }
+    
+    .alerts-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .alert-list {
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .alert-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .alert-asset {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .alert-condition {
+        font-size: 0.9rem;
+    }
+    
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+    }
+    
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider-round {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    
+    .slider-round:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider-round {
+        background: var(--success-color);
+    }
+    
+    input:checked + .slider-round:before {
+        transform: translateX(20px);
+    }
+    
+    /* News Feed */
+    .news-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .news-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .news-icon {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-right: 1rem;
+    }
+    
+    .news-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .news-feed {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .news-item {
+        display: flex;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .news-item:hover {
+        background-color: var(--light-bg);
+    }
+    
+    .news-item:last-child {
+        border-bottom: none;
+    }
+    
+    .news-badge {
+        background: var(--primary-color);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .news-content {
+        flex-grow: 1;
+    }
+    
+    .news-content h4 {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+        color: var(--text-color-dark);
+    }
+    
+    .news-content p {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+    
+    /* AI Assistant */
+    .assistant-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .assistant-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .assistant-icon {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-right: 1rem;
+    }
+    
+    .assistant-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .assistant-message {
+        margin-bottom: 1.5rem;
+    }
+    
+    .message-bubble {
+        background: var(--light-bg);
+        border-radius: 18px;
+        padding: 1rem 1.5rem;
+        position: relative;
+        max-width: 80%;
+    }
+    
+    .message-bubble:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-right-color: var(--light-bg);
+        border-left: 0;
+        margin-top: -10px;
+        margin-left: -10px;
+    }
+    
+    .message-bubble p {
+        margin: 0;
+    }
+    
+    .assistant-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    /* Security Center */
+    .audit-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .audit-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .audit-icon {
+        font-size: 1.8rem;
+        color: var(--success-color);
+        margin-right: 1rem;
+    }
+    
+    .audit-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .audit-status {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .audit-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--light-bg);
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        margin-bottom: 1rem;
+    }
+    
+    .audit-badge.verified {
+        color: var(--success-color);
+    }
+    
+    .audit-status p {
+        color: #6b7280;
+    }
+    
+    /* Send/Receive Forms */
+    .form-container {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-text {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+    
+    /* Receive Section */
+    .address-card {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .address-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .address-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .address-title {
+        font-weight: 600;
+    }
+    
+    .address-value {
+        font-family: monospace;
+        font-size: 1.1rem;
+        word-break: break-all;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: var(--card-bg);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .qr-code {
+        width: 150px;
+        height: 150px;
+        background: white;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+    }
+    
+    /* Transactions */
+    .transactions-container {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--text-color);
+    }
+    
+    .transactions-list {
+        overflow-x: auto;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    th {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    tbody tr:hover {
+        background: var(--light-bg);
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .status-completed {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .status-pending {
+        background: #fffbeb;
+        color: #ca8a04;
+    }
+    
+    .status-failed {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+    
+    .transaction-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 0.5rem;
+        border-radius: 50%;
+    }
+    
+    /* Announcements */
+    .announcement-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .announcement-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        justify-content: space-between;
+    }
+    
+    .announcement-icon {
+        font-size: 1.5rem;
+        margin-right: 0.8rem;
+        color: var(--primary-color);
+    }
+    
+    .announcement-title {
+        font-weight: 600;
+    }
+    
+    .announcement-date {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+    
+    /* System Status */
+    .system-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--light-bg);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        width: fit-content;
+    }
+    
+    .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success-color);
+    }
+    
+    /* PIN Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .modal-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+    }
+    
+    .plan-details {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .plan-detail-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+    }
+    
+    .plan-detail-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .plan-detail-label {
+        color: #6b7280;
+    }
+    
+    .plan-detail-value {
+        font-weight: 600;
+    }
+    
+    .auto-renew {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pin-inputs {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+        justify-content: center;
+    }
+    
+    .pin-input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 1.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--light-bg);
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    /* Toast Notification */
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--text-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        z-index: 1000;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .toast.success {
+        border-left: 4px solid var(--success-color);
+    }
+    
+    .toast.error {
+        border-left: 4px solid var(--error-color);
+    }
+    
+    /* KYC Status */
+    .kyc-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .kyc-verified {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .kyc-pending {
+        background: #fffbeb;
+        color: #ca8a04;
+    }
+    
+    .kyc-not-submitted {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 3px solid var(--primary-color);
+        animation: spin 1s linear infinite;
+        margin-right: 0.5rem;
+    }
+    
+    /* Location Loading Indicator */
+    .location-loading {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba(107, 114, 128, 0.3);
+        border-radius: 50%;
+        border-top-color: #6b7280;
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 5px;
+    }
+    
+    /* Investment History */
+    .history-container {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+    
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .history-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .history-table th, 
+    .history-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .history-table th {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .history-table tbody tr:hover {
+        background: var(--light-bg);
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes tickerScroll {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+    
+    /* Features Grid Layout */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .feature-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .assets-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .nav-tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .header-container {
+            flex-wrap: wrap;
+        }
+        
+        .plans-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .portfolio-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .top-actions {
+            flex-direction: column;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .rewards-calendar {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .allocation-legends {
+            grid-template-columns: 1fr;
+        }
+        
+        .assistant-actions {
+            flex-direction: column;
+        }
+        
+        .modal-content {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+        
+        .modal-buttons {
+            flex-direction: column;
+        }
+        
+        .pin-inputs {
+            gap: 0.5rem;
+        }
+        
+        .pin-input {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Crypto Ticker -->
+    <div class="crypto-ticker">
+        <div class="ticker-content">
+            <div class="ticker-item"><strong>USDT:</strong> <span>$1.00</span> <i class="fas fa-equals"></i></div>
+            <div class="ticker-item"><strong>TRX:</strong> <span>$0.11</span> <i class="fas fa-arrow-up ticker-up"></i> <span>2.5%</span></div>
+            <div class="ticker-item"><strong>BTC:</strong> <span>$62,450</span> <i class="fas fa-arrow-up ticker-up"></i> <span>1.8%</span></div>
+            <div class="ticker-item"><strong>ETH:</strong> <span>$3,420</span> <i class="fas fa-arrow-down ticker-down"></i> <span>0.7%</span></div>
+            <div class="ticker-item"><strong>BNB:</strong> <span>$580</span> <i class="fas fa-arrow-up ticker-up"></i> <span>3.2%</span></div>
+        </div>
+    </div>
+
+```
+<!-- Header -->
+<header>
+    <div class="container header-container">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            Credora Wealth Management
+        </div>
+        
+        <div class="user-menu">
+            <div class="theme-toggle" id="themeToggle">
+                <div class="theme-toggle-handle"></div>
+            </div>
+            
+            <div class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar">G</div>
+                <div>
+                    <div>Lisa</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">@resnicklisa_24</div>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="dropdown-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-key"></i>
+                    <span>Change PIN</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>
+                        <span>2FA: </span>
+                        <span id="2faStatus">Enabled</span>
+                    </span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>
+                        <span>KYC: </span>
+                        <span class="kyc-status kyc-verified">Verified</span>
+                    </span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="login-info">
+                    <div><strong>Last login:</strong> <span id="lastLoginDate">Sep 4, 2025</span></div>
+                    <div id="userLocation">Detecting location... <span class="location-loading"></span></div>
+                    <div>IP: <span id="userIP">Loading...</span></div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- System Status -->
+    <div class="system-status">
+        <div class="status-indicator"></div>
+        <span>All systems operational</span>
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="top-actions">
+        <button class="btn btn-primary" onclick="showTab('send')">
+            <i class="fas fa-paper-plane"></i> Send Crypto
+        </button>
+        <button class="btn btn-outline" onclick="showTab('receive')">
+            <i class="fas fa-qrcode"></i> Receive Crypto
+        </button>
+    </div>
+
+    <!-- Announcement -->
+    <div class="announcement-card">
+        <div class="announcement-header">
+            <div style="display: flex; align-items: center;">
+                <div class="announcement-icon">📢</div>
+                <div class="announcement-title">New USDT staking plan – earn 12% APY!</div>
+            </div>
+            <div class="announcement-date">Sep 5, 2025</div>
+        </div>
+        <p>We've launched a new staking program with higher returns. Lock your USDT for 90 days and earn up to 12% annual percentage yield.</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="dashboard">Dashboard</div>
+        <div class="nav-tab" data-tab="send">Send</div>
+        <div class="nav-tab" data-tab="receive">Receive</div>
+        <div class="nav-tab" data-tab="transactions">Transactions</div>
+        <div class="nav-tab" data-tab="history">Investment History</div>
+    </div>
+    
+    <!-- Dashboard Tab -->
+    <div class="tab-content active" id="dashboard">
+        <div class="wallet-overview">
+            <div class="total-balance">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-amount" id="animatedBalance">$0 USDT</div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$12,450</div>
+                    <div class="stat-label">Total Deposits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$8,270</div>
+                    <div class="stat-label">Total Withdrawals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Active Plans</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">+$1,240</div>
+                    <div class="stat-label">Lifetime Profit</div>
+                </div>
+            </div>
+            
+            <!-- Portfolio Card -->
+            <div class="portfolio-card">
+                <div class="portfolio-header">
+                    <h2 class="portfolio-title">My Portfolio</h2>
+                    <span class="kyc-status kyc-verified">Verified</span>
+                </div>
+                <div class="portfolio-details">
+                    <div class="portfolio-item">
+                        <div class="portfolio-label">Current Plan</div>
+                        <div class="portfolio-value">Pro</div>
+                    </div>
+                    <div class="portfolio-item">
+                        <div class="portfolio-label">Invested Amount</div>
+                        <div class="portfolio-value">$3,500</div>
+                    </div>
+                    <div class="portfolio-item">
+                        <div class="portfolio-label">Expected ROI</div>
+                        <div class="portfolio-value roi">+8.2%</div>
+                    </div>
+                    <div class="portfolio-item">
+                        <div class="portfolio-label">Expiry Date</div>
+                        <div class="portfolio-value">Dec 15, 2025</div>
+                        <div class="countdown-timer" id="planCountdown">Expires in 62 days 13h 05m</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="transactionChart"></canvas>
+            </div>
+            
+            <!-- NEW FEATURES GRID -->
+            <div class="features-grid">
+                <div class="feature-column">
+                    <!-- Achievements System -->
+                    <div class="achievements-card">
+                        <div class="achievements-header">
+                            <div class="achievements-icon"><i class="fas fa-trophy"></i></div>
+                            <h3 class="achievements-title">Achievements</h3>
+                        </div>
+                        <div class="achievements-grid">
+                            <div class="achievement">
+                                <div class="achievement-icon"><i class="fas fa-seedling"></i></div>
+                                <h4>First Timer</h4>
+                                <p>Make your first investment</p>
+                                <div class="progress-bar"><div class="progress" style="width: 0%"></div></div>
+                            </div>
+                            <div class="achievement">
+                                <div class="achievement-icon"><i class="fas fa-rocket"></i></div>
+                                <h4>Moon Mission</h4>
+                                <p>Reach $10,000 portfolio value</p>
+                                <div class="progress-bar"><div class="progress" style="width: 42%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Daily Rewards -->
+                    <div class="daily-rewards">
+                        <div class="rewards-header">
+                            <div class="rewards-icon"><i class="fas fa-calendar-check"></i></div>
+                            <h3 class="rewards-title">Daily Rewards</h3>
+                        </div>
+                        <div class="rewards-calendar">
+                            <div class="reward-day claimed"><span>Day 1</span><i class="fas fa-coins"></i></div>
+                            <div class="reward-day today"><span>Day 2</span><i class="fas fa-gem"></i></div>
+                            <div class="reward-day"><span>Day 3</span><i class="fas fa-gift"></i></div>
+                            <div class="reward-day"><span>Day 4</span><i class="fas fa-coins"></i></div>
+                            <div class="reward-day"><span>Day 5</span><i class="fas fa-gem"></i></div>
+                            <div class="reward-day"><span>Day 6</span><i class="fas fa-gift"></i></div>
+                            <div class="reward-day"><span>Day 7</span><i class="fas fa-trophy"></i></div>
+                        </div>
+                    </div>
+                    
+                    <!-- ROI Simulator -->
+                    <div class="simulator-card">
+                        <div class="simulator-header">
+                            <div class="simulator-icon"><i class="fas fa-calculator"></i></div>
+                            <h3 class="simulator-title">ROI Simulator</h3>
+                        </div>
+                        <div class="simulator-controls">
+                            <div class="form-group">
+                                <label class="form-label">Investment Amount ($)</label>
+                                <input type="range" min="100" max="10000" value="1000" class="slider" id="investmentSlider">
+                                <div class="slider-value" id="investmentValue">$1,000</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Duration (Days)</label>
+                                <input type="range" min="30" max="365" value="90" class="slider" id="durationSlider">
+                                <div class="slider-value" id="durationValue">90 days</div>
+                            </div>
+                        </div>
+                        <div class="simulation-result">
+                            <h4>Projected Profit: <span id="projectedProfit">$82.00</span></h4>
+                            <p>Based on current 8.2% monthly ROI</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Alerts -->
+                    <div class="alerts-card">
+                        <div class="alerts-header">
+                            <div class="alerts-icon"><i class="fas fa-bell"></i></div>
+                            <h3 class="alerts-title">Price Alerts</h3>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <div class="alert-info">
+                                    <span class="alert-asset">TRX</span>
+                                    <span class="alert-condition">Above $0.15</span>
+                                </div>
+                                <div class="alert-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-info">
+                                    <span class="alert-asset">BTC</span>
+                                    <span class="alert-condition">Below $60,000</span>
+                                </div>
+                                <div class="alert-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline"><i class="fas fa-plus"></i> Add New Alert</button>
+                    </div>
+                </div>
+                
+                <div class="feature-column">
+                    <!-- Portfolio Allocation -->
+                    <div class="allocation-card">
+                        <div class="allocation-header">
+                            <div class="allocation-icon"><i class="fas fa-chart-pie"></i></div>
+                            <h3 class="allocation-title">Portfolio Allocation</h3>
+                        </div>
+                        <div class="chart-container-pie">
+                            <canvas id="allocationChart"></canvas>
+                        </div>
+                        <div class="allocation-legends">
+                            <div class="legend-item"><span class="color-dot usdt"></span> USDT: 68%</div>
+                            <div class="legend-item"><span class="color-dot trx"></span> TRX: 12%</div>
+                            <div class="legend-item"><span class="color-dot btc"></span> BTC: 15%</div>
+                            <div class="legend-item"><span class="color-dot other"></span> Other: 5%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Crypto News Feed -->
+                    <div class="news-card">
+                        <div class="news-header">
+                            <div class="news-icon"><i class="fas fa-newspaper"></i></div>
+                            <h3 class="news-title">Crypto News</h3>
+                        </div>
+                        <div class="news-feed">
+                            <div class="news-item">
+                                <div class="news-badge">BTC</div>
+                                <div class="news-content">
+                                    <h4>Bitcoin Surges Past $65,000 Amid Institutional Demand</h4>
+                                    <p>2 hours ago • CryptoNews</p>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-badge">TRX</div>
+                                <div class="news-content">
+                                    <h4>TRON Network Announces Major Upgrade for Q4 2025</h4>
+                                    <p>5 hours ago • TronWeekly</p>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-badge">DEFI</div>
+                                <div class="news-content">
+                                    <h4>DeFi Ecosystem Grows 40% in Q3 2025</h4>
+                                    <p>1 day ago • DeFi Pulse</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Portfolio Assistant -->
+                    <div class="assistant-card">
+                        <div class="assistant-header">
+                            <div class="assistant-icon"><i class="fas fa-robot"></i></div>
+                            <h3 class="assistant-title">Portfolio Assistant</h3>
+                        </div>
+                        <div class="assistant-message">
+                            <div class="message-bubble">
+                                <p>Hi there! I noticed your portfolio is 80% in stablecoins. Would you like suggestions for diversification?</p>
+                            </div>
+                        </div>
+                        <div class="assistant-actions">
+                            <button class="btn btn-outline">View Suggestions</button>
+                            <button class="btn btn-outline">Ask a Question</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Center -->
+                    <div class="audit-card">
+                        <div class="audit-header">
+                            <div class="audit-icon"><i class="fas fa-shield-alt"></i></div>
+                            <h3 class="audit-title">Security Center</h3>
+                        </div>
+                        <div class="audit-status">
+                            <div class="audit-badge verified">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Contracts Audited</span>
+                            </div>
+                            <p>All investment smart contracts have been verified by CertiK</p>
+                        </div>
+                        <button class="btn btn-outline">View Audit Reports</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+
+<!-- Partners & Sponsors Section -->
+<div class="partners-card" style="background: var(--card-bg); border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.04); border: 1px solid var(--border-color); margin-bottom: 2rem;">
+    <h2 class="plans-title">Trusted by Leading Global Partners</h2>
+    <p>
+        Our platform is powered by industry-leading technology providers to ensure the highest levels of trust, 
+        security, and reliability. We integrate best-in-class solutions for custody, compliance, payments, and 
+        infrastructure so our customers can invest with confidence.
+    </p>
+
+    <div class="partners-logos" style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; align-items: center; margin-top: 1.5rem;">
+        <img src="https://ik.imagekit.io/wuzyfxd9hw/IMG_3929.jpeg?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=1757169375813" alt="Binance" style="height: 50px;">
+        <img src="https://ik.imagekit.io/wuzyfxd9hw/Vercel%20logo?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=
+1757081867750" alt="Fireblocks" style="height: 50px;">
+        <img src="https://ik.imagekit.io/wuzyfxd9hw/photo-output.jpeg?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt= 1757169372252" alt="Chainalysis" style="height: 50px;">
+        <img src="https://ik.imagekit.io/v51s8d9ax/IMG_3932.jpeg?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt= 1757170518528" alt="Amazon Web Services" style="height: 50px;">
+        <img src="https://ik.imagekit.io/wuzyfxd9hw/IMG_3933.png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt= 1757169369844" alt="MoonPay" style="height: 50px;">
+        <img src="https://ik.imagekit.io/wuzyfxd9hw/IMG_3934.png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt= 1757169376028" alt="PayPal" style="height: 50px;">
+    </div>
+</div>
+<!-- Investment Plans -->
+            <div class="plans-container">
+                <div class="plans-header">
+                    <h2 class="plans-title">Investment Plans</h2>
+                </div>
+                <div class="plans-grid">
+                    <div class="plan-card">
+                        <h3 class="plan-name">Starter</h3>
+                        <div class="plan-roi">5.2%</div>
+                        <div class="plan-period">Monthly ROI</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> $100 - $1,000 investment</li>
+                            <li><i class="fas fa-check"></i> 30 days duration</li>
+                            <li><i class="fas fa-check"></i> Basic support</li>
+                            <li><i class="fas fa-check"></i> Principal included</li>
+                        </ul>
+                        <button class="btn btn-outline" onclick="showUpgradeModal('Starter', 5.2, 100, 1000, 30)">
+                            <i class="fas fa-arrow-up"></i> Upgrade Now
+                        </button>
+                    </div>
+                    
+                    <div class="plan-card featured">
+                        <h3 class="plan-name">Pro</h3>
+                        <div class="plan-roi">8.2%</div>
+                        <div class="plan-period">Monthly ROI</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> $1,000 - $5,000 investment</li>
+                            <li><i class="fas fa-check"></i> 60 days duration</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                            <li><i class="fas fa-check"></i> Principal included</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="showUpgradeModal('Pro', 8.2, 1000, 5000, 60)">
+                            <i class="fas fa-arrow-up"></i> Upgrade Now
+                        </button>
+                    </div>
+                    
+                    <div class="plan-card">
+                        <h3 class="plan-name">VIP</h3>
+                        <div class="plan-roi">12.5%</div>
+                        <div class="plan-period">Monthly ROI</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> $5,000+ investment</li>
+                            <li><i class="fas fa-check"></i> 90 days duration</li>
+                            <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
+                            <li><i class="fas fa-check"></i> Principal included</li>
+                        </ul>
+                        <button class="btn btn-outline" onclick="showUpgradeModal('VIP', 12.5, 5000, 10000, 90)">
+                            <i class="fas fa-arrow-up"></i> Upgrade Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assets-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-icon">
+                            <img src="https://ik.imagekit.io/wuzyfxd9hw/photo-output(1).png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=1753802764949" alt="USDT Logo">
+                        </div>
+                        <div class="asset-name">USDT (TRC20)</div>
+                    </div>
+                    <div class="asset-balance">4,180 USDT</div>
+                    <div class="asset-value">$4,180.00</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showTab('send')">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                        <button class="btn btn-outline" onclick="showTab('receive')">
+                            <i class="fas fa-qrcode"></i> Receive
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-icon">
+                            <img src="https://ik.imagekit.io/wuzyfxd9hw/photo-output.png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=1753802766044" alt="TRX Logo">
+                        </div>
+                        <div class="asset-name">TRX</div>
+                    </div>
+                    <div class="asset-balance">3 TRX</div>
+                    <div class="asset-value" id="trxValue">$0.33</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showTab('send')">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                        <button class="btn btn-outline" onclick="showTab('receive')">
+                            <i class="fas fa-qrcode"></i> Receive
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Send Tab -->
+    <div class="tab-content" id="send">
+        <div class="form-container">
+            <h2 class="form-title">Send Crypto</h2>
+            
+            <div class="error-message" id="sendError">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText"></span>
+            </div>
+            
+            <div class="success-message" id="sendSuccess">
+                <i class="fas fa-check-circle"></i>
+                <span>Transaction completed successfully!</span>
+            </div>
+            
+            <form id="sendForm">
+                <div class="form-group">
+                    <label class="form-label">Select Asset</label>
+                    <select class="form-control" id="sendAsset">
+                        <option value="usdt">USDT (TRC20)</option>
+                        <option value="trx">TRX</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Recipient Address</label>
+                    <input type="text" class="form-control" id="recipientAddress" placeholder="Enter wallet address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="sendAmount" placeholder="Enter amount" required>
+                    <div class="form-text" id="feeNote">Trx Gas ⛽️</div>
+                </div>
+                
+                <button type="button" class="btn btn-primary" id="sendButton" onclick="validateWithdrawal()">
+                    <i class="fas fa-paper-plane"></i> Send Now
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Receive Tab -->
+    <div class="tab-content" id="receive">
+        <div class="form-container">
+            <h2 class="form-title">Receive Crypto</h2>
+            
+            <div class="address-card">
+                <div class="address-header">
+                    <div class="address-icon">
+                        <i class="fab fa-usd"></i>
+                    </div>
+                    <div class="address-title">USDT (TRC20) Address</div>
+                </div>
+                <div class="address-value" id="usdtAddress">TEMprfCqeEDFbqvXDpT3jjvg9nKM6NWKC1</div>
+                <div class="qr-code" id="usdtQr"></div>
+                <button class="btn btn-outline" onclick="copyToClipboard('usdtAddress')">
+                    <i class="fas fa-copy"></i> Copy Address
+                </button>
+            </div>
+            
+            <div class="address-card">
+                <div class="address-header">
+                    <div class="address-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="address-title">TRX Address</div>
+                </div>
+                <div class="address-value" id="trxAddress">TEMprfCqeEDFbqvXDpT3jjvg9nKM6NWKC1</div>
+                <div class="qr-code" id="trxQr"></div>
+                <button class="btn btn-outline" onclick="copyToClipboard('trxAddress')">
+                    <i class="fas fa-copy"></i> Copy Address
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transactions Tab -->
+    <div class="tab-content" id="transactions">
+        <div class="transactions-container">
+            <h2 class="form-title">Transaction History</h2>
+            
+            <div class="filters">
+                <select class="filter-select" id="typeFilter2" onchange="filterTransactions()">
+                    <option value="all">All Types</option>
+                    <option value="deposit">Deposit</option>
+                    <option value="withdrawal">Withdrawal</option>
+                </select>
+                
+                <select class="filter-select" id="assetFilter2" onchange="filterTransactions()">
+                    <option value="all">All Assets</option>
+                    <option value="usdt">USDT</option>
+                    <option value="trx">TRX</option>
+                </select>
+                
+                <select class="filter-select" id="statusFilter2" onchange="filterTransactions()">
+                    <option value="all">All Statuses</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                </select>
+                
+                <button class="btn btn-outline" onclick="exportToCSV()">
+                    <i class="fas fa-download"></i> Export to CSV
+                </button>
+            </div>
+            
+            <div class="transactions-list">
+                <table id="transactionsTable2">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Asset</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsBody2">
+                        <!-- Transactions will be loaded here from localStorage -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Investment History Tab -->
+    <div class="tab-content" id="history">
+        <div class="history-container">
+            <div class="history-header">
+                <h2 class="history-title">Investment History</h2>
+                <button class="btn btn-outline" onclick="exportHistoryToCSV()">
+                    <i class="fas fa-download"></i> Export History
+                </button>
+            </div>
+            
+            <div class="transactions-list">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Plan</th>
+                            <th>Amount</th>
+                            <th>ROI</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="investmentHistoryBody">
+                        <!-- Investment history will be loaded here from localStorage -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Support Modal -->
+<div class="modal" id="supportModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Contact Support</h2>
+        
+        <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-control" placeholder="Enter subject">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" rows="5" placeholder="Describe your issue"></textarea>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-outline" onclick="closeModal('supportModal')">Cancel</button>
+            <button class="btn btn-primary">Submit Ticket</button>
+        </div>
+    </div>
+</div>
+
+<!-- PIN Modal -->
+<div class="modal" id="pinModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Enter PIN</h2>
+        <p>Please enter your 4-digit PIN to confirm the transaction</p>
+        
+        <div class="error-message" id="pinError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="pinErrorText">Incorrect PIN. Please try again.</span>
+        </div>
+        
+        <div class="pin-inputs">
+            <input type="password" class="pin-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="password" class="pin-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="password" class="pin-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="password" class="pin-input" maxlength="1" oninput="moveToNext(this)">
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-outline" onclick="closeModal('pinModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="verifyPin()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Upgrade Plan Modal -->
+<div class="modal" id="upgradeModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Upgrade Investment Plan</h2>
+        <p class="modal-subtitle">Confirm your plan upgrade details</p>
+        
+        <div class="plan-details">
+            <div class="plan-detail-item">
+                <span class="plan-detail-label">Plan:</span>
+                <span class="plan-detail-value" id="modalPlanName">Pro</span>
+            </div>
+            <div class="plan-detail-item">
+                <span class="plan-detail-label">Monthly ROI:</span>
+                <span class="plan-detail-value" id="modalPlanROI">8.2%</span>
+            </div>
+            <div class="plan-detail-item">
+                <span class="plan-detail-label">Minimum Investment:</span>
+                <span class="plan-detail-value" id="modalPlanMin">$1,000</span>
+            </div>
+            <div class="plan-detail-item">
+                <span class="plan-detail-label">Duration:</span>
+                <span class="plan-detail-value" id="modalPlanDuration">60 days</span>
+            </div>
+            <div class="plan-detail-item">
+                <span class="plan-detail-label">Expected Profit:</span>
+                <span class="plan-detail-value" id="modalPlanProfit">$492.00</span>
+            </div>
+        </div>
+        
+        <div class="auto-renew">
+            <input type="checkbox" id="autoRenew">
+            <label for="autoRenew">Auto-renew plan on expiry</label>
+        </div>
+        
+        <div class="error-message" id="upgradeError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="upgradeErrorText"></span>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-outline" onclick="closeModal('upgradeModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="confirmUpgrade()">Confirm Upgrade</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle" id="toastIcon"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    // Global variables
+    let currentPlan = "Pro";
+    let currentInvestment = 3500;
+    let walletBalance = 4180;
+    let investmentHistory = JSON.parse(localStorage.getItem('investmentHistory')) || [];
+    
+    // Function to get user's location and IP
+    async function fetchUserLocationAndIP() {
+        try {
+            // Get IP address
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipResponse.json();
+            document.getElementById('userIP').textContent = ipData.ip;
+            
+            // Get location based on IP
+            const locationResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
+            const locationData = await locationResponse.json();
+            
+            if (locationData.city && locationData.country_name) {
+                document.getElementById('userLocation').textContent = `${locationData.city}, ${locationData.country_name}`;
+            } else {
+                document.getElementById('userLocation').textContent = 'Location not available';
+            }
+        } catch (error) {
+            console.error('Error fetching location data:', error);
+            document.getElementById('userLocation').textContent = 'Unable to detect location';
+            document.getElementById('userIP').textContent = 'Unable to detect IP';
+        }
+        
+        // Update login date to current date
+        const now = new Date();
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('lastLoginDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    // Check for saved theme preference or respect OS preference
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (savedTheme === 'dark') {
+        body.setAttribute('data-theme', 'dark');
+    }
+    
+    themeToggle.addEventListener('click', () => {
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+    
+    // Profile dropdown
+    const userProfile = document.getElementById('userProfile');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    userProfile.addEventListener('click', () => {
+        profileDropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!userProfile.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.classList.remove('active');
+        }
+    });
+    
+    // Tab Navigation
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.nav-tab[data-tab="${tabId}"]`).classList.add('active');
+    }
+    
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            showTab(tab.getAttribute('data-tab'));
+        });
+    });
+    
+    // Animated balance counter
+    function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            element.textContent = '$' + value.toLocaleString() + ' USDT';
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+    
+    // Transaction history management
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    
+    // Sample transactions if none exist
+    if (transactions.length === 0) {
+        transactions = [
+            { id: 1, date: 'Feb 14, 2024', type: 'deposit', asset: 'usdt', amount: '$450', status: 'completed' },
+            { id: 2, date: 'Mar 02, 2024', type: 'withdrawal', asset: 'usdt', amount: '$3,200', status: 'completed' },
+            { id: 3, date: 'Apr 17, 2024', type: 'withdrawal', asset: 'usdt', amount: '$5,500', status: 'completed' },
+            { id: 4, date: 'Jul 08, 2024', type: 'withdrawal', asset: 'usdt', amount: '$7,200', status: 'completed' },
+            { id: 5, date: 'Nov 19, 2024', type: 'deposit', asset: 'usdt', amount: '$870', status: 'completed' },
+            { id: 6, date: 'Jan 02, 2025', type: 'withdrawal', asset: 'usdt', amount: '$4,000', status: 'failed' }
+        ];
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+    
+    // Load transactions from localStorage
+    function loadTransactions() {
+        const transactionsBody = document.getElementById('transactionsBody');
+        const transactionsBody2 = document.getElementById('transactionsBody2');
+        
+        if (transactionsBody) {
+            transactionsBody.innerHTML = '';
+        }
+        if (transactionsBody2) {
+            transactionsBody2.innerHTML = '';
+        }
+        
+        transactions.forEach(transaction => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-type', transaction.type);
+            row.setAttribute('data-asset', transaction.asset);
+            row.setAttribute('data-status', transaction.status);
+            
+            const statusClass = transaction.status === 'completed' ? 'status-completed' : 
+                              transaction.status === 'pending' ? 'status-pending' : 'status-failed';
+            
+            const statusIcon = transaction.status === 'completed' ? 'fa-check' : 
+                             transaction.status === 'pending' ? 'fa-clock' : 'fa-times';
+            
+            const assetIcon = transaction.asset === 'usdt' ? 
+                '<img src="https://ik.imagekit.io/wuzyfxd9hw/photo-output(1).png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=1753802764949" class="transaction-icon" alt="USDT">' : 
+                '<img src="https://ik.imagekit.io/wuzyfxd9hw/photo-output.png?updatedAt=ik-sdk-version=javascript-1.4.3&updatedAt=1753802766044" class="transaction-icon" alt="TRX">';
+            
+            row.innerHTML = `
+                <td>${transaction.date}</td>
+                <td>${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
+                <td>${assetIcon} ${transaction.asset.toUpperCase()}</td>
+                <td>${transaction.amount}</td>
+                <td><span class="status-badge ${statusClass}"><i class="fas ${statusIcon}"></i> ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}</span></td>
+            `;
+            
+            if (transactionsBody) {
+                transactionsBody.appendChild(row.cloneNode(true));
+            }
+            if (transactionsBody2) {
+                transactionsBody2.appendChild(row);
+            }
+        });
+    }
+    
+    // Load investment history
+    function loadInvestmentHistory() {
+        const historyBody = document.getElementById('investmentHistoryBody');
+        
+        if (historyBody) {
+            historyBody.innerHTML = '';
+        }
+        
+        if (investmentHistory.length === 0) {
+            // Add sample history if empty
+            investmentHistory = [
+                { id: 1, date: 'Jun 15, 2024', plan: 'Starter', amount: '$1,000', roi: '5.2%', status: 'Completed' },
+                { id: 2, date: 'Aug 20, 2024', plan: 'Pro', amount: '$3,500', roi: '8.2%', status: 'Active' }
+            ];
+            localStorage.setItem('investmentHistory', JSON.stringify(investmentHistory));
+        }
+        
+        investmentHistory.forEach(investment => {
+            const row = document.createElement('tr');
+            
+            const statusClass = investment.status === 'Active' ? 'status-completed' : 
+                              investment.status === 'Pending' ? 'status-pending' : 'status-failed';
+            
+            row.innerHTML = `
+                <td>${investment.date}</td>
+                <td>${investment.plan}</td>
+                <td>${investment.amount}</td>
+                <td>${investment.roi}</td>
+                <td><span class="status-badge ${statusClass}">${investment.status}</span></td>
+            `;
+            
+            if (historyBody) {
+                historyBody.appendChild(row);
+            }
+        });
+    }
+    
+    // Add a new transaction to history
+    function addTransaction(date, type, asset, amount, status) {
+        const newTransaction = {
+            id: transactions.length + 1,
+            date: date,
+            type: type,
+            asset: asset,
+            amount: amount,
+            status: status
+        };
+        
+        transactions.push(newTransaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        loadTransactions();
+    }
+    
+    // Add investment to history
+    function addInvestmentHistory(date, plan, amount, roi, status) {
+        const newInvestment = {
+            id: investmentHistory.length + 1,
+            date: date,
+            plan: plan,
+            amount: amount,
+            roi: roi,
+            status: status
+        };
+        
+        investmentHistory.push(newInvestment);
+        localStorage.setItem('investmentHistory', JSON.stringify(investmentHistory));
+        loadInvestmentHistory();
+    }
+    
+    // Initialize animated balance
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchUserLocationAndIP();
+        
+        const balanceElement = document.getElementById('animatedBalance');
+        animateValue(balanceElement, 0, 4180, 2000);
+        
+        // Generate QR codes
+        new QRCode(document.getElementById('usdtQr'), {
+            text: 'TEMprfCqeEDFbqvXDpT3jjvg9nKM6NWKC1',
+            width: 128,
+            height: 128
+        });
+        
+        new QRCode(document.getElementById('trxQr'), {
+            text: 'TEMprfCqeEDFbqvXDpT3jjvg9nKM6NWKC1',
+            width: 128,
+            height: 128
+        });
+        
+        // Initialize chart
+        initChart();
+        
+        // Initialize allocation chart
+        initAllocationChart();
+        
+        // Update TRX value (in a real app, this would fetch from an API)
+        updateTrxValue();
+        
+        // Load transactions
+        loadTransactions();
+        
+        // Load investment history
+        loadInvestmentHistory();
+        
+        // Initialize ROI simulator
+        initROISimulator();
+        
+        // Start countdown timer
+        startCountdown();
+    });
+    
+    // Update TRX value based on current price
+    function updateTrxValue() {
+        const trxPrice = 0.11; // Static price for demo
+        const trxBalance = 3;
+        const trxValue = (trxPrice * trxBalance).toFixed(2);
+        document.getElementById('trxValue').textContent = `$${trxValue}`;
+    }
+    
+    // Initialize transaction chart
+    function initChart() {
+        const ctx = document.getElementById('transactionChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+                datasets: [
+                    {
+                        label: 'Deposits',
+                        data: [450, 0, 0, 0, 0, 0, 0, 0, 0, 870, 0, 0],
+                        backgroundColor: '#10b981',
+                    },
+                    {
+                        label: 'Withdrawals',
+                        data: [0, 3200, 5500, 0, 0, 7200, 0, 0, 0, 0, 0, 4000],
+                        backgroundColor: '#ef4444',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize allocation chart
+    function initAllocationChart() {
+        const ctx = document.getElementById('allocationChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['USDT', 'TRX', 'BTC', 'Other'],
+                datasets: [{
+                    data: [68, 12, 15, 5],
+                    backgroundColor: [
+                        '#26a17b',
+                        '#ef0027',
+                        '#f7931a',
+                        '#627eea'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize ROI simulator
+    function initROISimulator() {
+        const investmentSlider = document.getElementById('investmentSlider');
+        const investmentValue = document.getElementById('investmentValue');
+        const durationSlider = document.getElementById('durationSlider');
+        const durationValue = document.getElementById('durationValue');
+        const projectedProfit = document.getElementById('projectedProfit');
+        
+        investmentSlider.addEventListener('input', updateROISimulation);
+        durationSlider.addEventListener('input', updateROISimulation);
+        
+        function updateROISimulation() {
+            const investment = parseInt(investmentSlider.value);
+            const duration = parseInt(durationSlider.value);
+            const monthlyROI = 8.2; // 8.2% monthly ROI
+            
+            // Calculate projected profit
+            const profit = investment * (monthlyROI / 100) * (duration / 30);
+            
+            // Update display values
+            investmentValue.textContent = `$${investment.toLocaleString()}`;
+            durationValue.textContent = `${duration} days`;
+            projectedProfit.textContent = `$${profit.toFixed(2)}`;
+        }
+        
+        // Initial update
+        updateROISimulation();
+    }
+    
+    // Start countdown timer
+    function startCountdown() {
+        // Set expiry date to 90 days from now
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 90);
+        
+        function updateCountdown() {
+            const now = new Date();
+            const diff = expiryDate - now;
+            
+            if (diff <= 0) {
+                document.getElementById('planCountdown').textContent = 'Plan expired';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('planCountdown').textContent = `Expires in ${days} days ${hours}h ${minutes}m`;
+        }
+        
+        // Update immediately and then every minute
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+    }
+    
+    // Show upgrade modal
+    function showUpgradeModal(planName, roi, minAmount, maxAmount, duration) {
+        // Check if already on this plan
+        if (planName === currentPlan) {
+            showToast(`You are already on the ${planName} plan`, 'error');
+            return;
+        }
+        
+        // Check upgrade path restriction
+        const planOrder = ["Starter", "Pro", "VIP"];
+        const currentIndex = planOrder.indexOf(currentPlan);
+        const newIndex = planOrder.indexOf(planName);
+        
+        if (newIndex < currentIndex) {
+            showToast(`You cannot downgrade from ${currentPlan} to ${planName}`, 'error');
+            return;
+        }
+        
+        // Calculate expected profit
+        const investmentAmount = Math.max(minAmount, currentInvestment);
+        const expectedProfit = (investmentAmount * (roi / 100) * (duration / 30)).toFixed(2);
+        
+        // Update modal content
+        document.getElementById('modalPlanName').textContent = planName;
+        document.getElementById('modalPlanROI').textContent = `${roi}%`;
+        document.getElementById('modalPlanMin').textContent = `$${minAmount.toLocaleString()}`;
+        document.getElementById('modalPlanDuration').textContent = `${duration} days`;
+        document.getElementById('modalPlanProfit').textContent = `$${expectedProfit}`;
+        
+        // Store plan details for confirmation
+        document.getElementById('upgradeModal').setAttribute('data-plan', planName);
+        document.getElementById('upgradeModal').setAttribute('data-roi', roi);
+        document.getElementById('upgradeModal').setAttribute('data-min', minAmount);
+        document.getElementById('upgradeModal').setAttribute('data-duration', duration);
+        
+        // Show modal
+        document.getElementById('upgradeModal').classList.add('active');
+        document.getElementById('upgradeError').style.display = 'none';
+    }
+    
+    // Confirm upgrade
+    function confirmUpgrade() {
+        const planName = document.getElementById('upgradeModal').getAttribute('data-plan');
+        const roi = parseFloat(document.getElementById('upgradeModal').getAttribute('data-roi'));
+        const minAmount = parseFloat(document.getElementById('upgradeModal').getAttribute('data-min'));
+        const duration = parseInt(document.getElementById('upgradeModal').getAttribute('data-duration'));
+        const autoRenew = document.getElementById('autoRenew').checked;
+        
+        // Check balance
+        if (walletBalance < minAmount) {
+            document.getElementById('upgradeError').style.display = 'flex';
+            document.getElementById('upgradeErrorText').textContent = `Insufficient balance. You need at least $${minAmount.toLocaleString()} to upgrade to ${planName} plan.`;
+            return;
+        }
+        
+        // Close modal and show PIN verification
+        closeModal('upgradeModal');
+        showPinModal('upgrade');
+    }
+    
+    // PIN Modal Functions
+    function showPinModal(action) {
+        document.getElementById('pinModal').classList.add('active');
+        document.getElementById('pinModal').setAttribute('data-action', action);
+        document.querySelectorAll('.pin-input').forEach(input => {
+            input.value = '';
+        });
+        document.getElementById('pinError').style.display = 'none';
+        document.querySelector('.pin-input').focus();
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+    
+    function moveToNext(input) {
+        if (input.value.length === 1) {
+            const next = input.nextElementSibling;
+            if (next) next.focus();
+        }
+    }
+    
+    function verifyPin() {
+        const pinInputs = document.querySelectorAll('.pin-input');
+        const enteredPin = Array.from(pinInputs).map(input => input.value).join('');
+        const action = document.getElementById('pinModal').getAttribute('data-action');
+        
+        if (enteredPin === '8819') {
+            closeModal('pinModal');
+            
+            if (action === 'upgrade') {
+                completeUpgrade();
+            } else {
+                // Check TRX balance for USDT withdrawals
+                const asset = document.getElementById('sendAsset').value;
+                
+                if (asset === 'usdt') {
+                    if (3 < 25) { // Current TRX balance is 3
+                        document.getElementById('pinError').style.display = 'flex';
+                        document.getElementById('pinErrorText').textContent = 'TRX balance not enough for charges. Please top up TRX.';
+                        
+                        // Record failed transaction
+                        const now = new Date();
+                        const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                        const amount = document.getElementById('sendAmount').value;
+                        addTransaction(dateStr, 'withdrawal', 'usdt', `$${amount}`, 'failed');
+                        
+                        return;
+                    }
+                }
+                
+                // Successful transaction
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                const amount = document.getElementById('sendAmount').value;
+                const assetType = document.getElementById('sendAsset').value;
+                addTransaction(dateStr, 'withdrawal', assetType, `$${amount}`, 'completed');
+                
+                showToast('Transaction completed successfully!', 'success');
+                
+                // Reset form
+                document.getElementById('sendForm').reset();
+            }
+        } else {
+            document.getElementById('pinError').style.display = 'flex';
+            document.getElementById('pinErrorText').textContent = 'Incorrect PIN. Please try again.';
+        }
+    }
+    
+    // Complete upgrade process
+    function completeUpgrade() {
+        const planName = document.getElementById('upgradeModal').getAttribute('data-plan');
+        const roi = parseFloat(document.getElementById('upgradeModal').getAttribute('data-roi'));
+        const minAmount = parseFloat(document.getElementById('upgradeModal').getAttribute('data-min'));
+        const duration = parseInt(document.getElementById('upgradeModal').getAttribute('data-duration'));
+        const autoRenew = document.getElementById('autoRenew').checked;
+        
+        // Update current plan
+        currentPlan = planName;
+        currentInvestment = Math.max(minAmount, currentInvestment);
+        
+        // Update UI
+        document.querySelector('.portfolio-value').textContent = planName;
+        document.querySelector('.portfolio-value.roi').textContent = `+${roi}%`;
+        
+        // Add to investment history
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        addInvestmentHistory(dateStr, planName, `$${currentInvestment.toLocaleString()}`, `${roi}%`, 'Active');
+        
+        // Show success message
+        showToast(`Successfully upgraded to ${planName} plan!`, 'success');
+        
+        // Reset countdown
+        startCountdown();
+    }
+    
+    // Withdrawal Validation
+    function validateWithdrawal() {
+        const asset = document.getElementById('sendAsset').value;
+        const amount = document.getElementById('sendAmount').value;
+        const address = document.getElementById('recipientAddress').value;
+        
+        // Basic validation
+        if (!address || !amount) {
+            showToast('Please fill all fields', 'error');
+            return;
+        }
+        
+        const sendButton = document.getElementById('sendButton');
+        const originalText = sendButton.innerHTML;
+        
+        // Show loading state
+        sendButton.innerHTML = '<div class="spinner"></div> Processing...';
+        sendButton.disabled = true;
+        
+        // Simulate processing delay
+        setTimeout(() => {
+            if (asset === 'usdt') {
+                if (3 < 25) { // Current TRX balance is 3
+                    sendButton.innerHTML = originalText;
+                    sendButton.disabled = false;
+                    
+                    // Record failed transaction
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    addTransaction(dateStr, 'withdrawal', 'usdt', `$${amount}`, 'failed');
+                    
+                    showToast('TRX balance not enough for charges. Please top up TRX.', 'error');
+                    return;
+                }
+            }
+            
+            // If TRX balance is sufficient, show PIN modal
+            sendButton.innerHTML = originalText;
+            sendButton.disabled = false;
+            showPinModal('withdrawal');
+        }, 1500);
+    }
+    
+    // Update fee note based on selected asset
+    document.getElementById('sendAsset').addEventListener('change', function() {
+        const feeNote = document.getElementById('feeNote');
+        if (this.value === 'usdt') {
+            feeNote.textContent = 'Transaction fee: 25 TRX (for USDT withdrawals)';
+        } else {
+            feeNote.textContent = 'Transaction fee: 0.1 TRX (for TRX transfers)';
+        }
+    });
+    
+    // Copy to clipboard function
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Address copied to clipboard!', 'success');
+        }).catch(err => {
+            showToast('Failed to copy address', 'error');
+        });
+    }
+    
+    // Transaction filtering
+    function filterTransactions() {
+        const typeFilter = document.getElementById('typeFilter')?.value || document.getElementById('typeFilter2')?.value || 'all';
+        const assetFilter = document.getElementById('assetFilter')?.value || document.getElementById('assetFilter2')?.value || 'all';
+        const statusFilter = document.getElementById('statusFilter')?.value || document.getElementById('statusFilter2')?.value || 'all';
+        
+        const rows = document.querySelectorAll('#transactionsTable tbody tr, #transactionsTable2 tbody tr');
+        
+        rows.forEach(row => {
+            const type = row.getAttribute('data-type');
+            const asset = row.getAttribute('data-asset');
+            const status = row.getAttribute('data-status');
+            
+            const typeMatch = typeFilter === 'all' || type === typeFilter;
+            const assetMatch = assetFilter === 'all' || asset === assetFilter;
+            const statusMatch = statusFilter === 'all' || status === statusFilter;
+            
+            if (typeMatch && assetMatch && statusMatch) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    
+    // Export to CSV
+    function exportToCSV() {
+        // In a real application, this would generate a CSV file
+        showToast('Transaction history exported to CSV', 'success');
+    }
+    
+    // Export history to CSV
+    function exportHistoryToCSV() {
+        // In a real application, this would generate a CSV file
+        showToast('Investment history exported to CSV', 'success');
+    }
+    
+    // Show toast notification
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toast.className = 'toast ' + type;
+        toastMessage.textContent = message;
+        
+        if (type === 'success') {
+            toastIcon.className = 'fas fa-check-circle';
+        } else {
+            toastIcon.className = 'fas fa-exclamation-circle';
+        }
+        
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Support modal
+    function showSupportModal() {
+        document.getElementById('supportModal').classList.add('active');
+    }
+    
+    // Toggle 2FA
+    function toggle2FA() {
+        const statusElement = document.getElementById('2faStatus');
+        if (statusElement.textContent === 'Enabled') {
+            statusElement.textContent = 'Disabled';
+            showToast('Two-factor authentication disabled', 'success');
+        } else {
+            statusElement.textContent = 'Enabled';
+            showToast('Two-factor authentication enabled', 'success');
+        }
+    }
+</script>
+```
+
+</body>
+</html>

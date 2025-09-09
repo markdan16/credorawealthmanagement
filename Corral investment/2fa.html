@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credora Wealth - Two-Factor Authentication</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #1a3a5f;
+            --primary-dark: #0f2a4a;
+            --secondary-color: #8c68cd;
+            --text-color: #374151;
+            --text-light: #6b7280;
+            --bg-light: #f5f7fa;
+            --bg-lighter: #e4e8f0;
+            --white: #ffffff;
+            --error-color: #ef4444;
+            --success-color: #059669;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            background: linear-gradient(-45deg, #f5f7fa, #e4e8f0, #e4f0e8, #e8e4f0);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #0a2647);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #e5e7eb;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .auth-container {
+            background: #1e293b;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+        
+        .auth-header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .auth-header-section::before {
+            content: '';
+            position: absolute;
+            top: -70px;
+            right: -70px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .auth-header-section::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.3s;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .auth-header-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.5s;
+        }
+        
+        .auth-header-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.7s;
+        }
+        
+        .auth-content {
+            padding: 30px;
+        }
+        
+        .dark-mode .auth-content {
+            color: #e5e7eb;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .dark-mode .auth-header h1 {
+            color: var(--white);
+        }
+        
+        .auth-header p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        
+        .dark-mode .auth-header p {
+            color: #d1d5db;
+        }
+        
+        .auth-form {
+            width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .dark-mode .form-group label {
+            color: #e5e7eb;
+        }
+        
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+        
+        .dark-mode .otp-input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+        }
+        
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1);
+        }
+        
+        .dark-mode .otp-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .auth-button:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+        
+        .auth-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .button-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+        }
+        
+        .resend-code {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .dark-mode .resend-code {
+            color: #9ca3af;
+        }
+        
+        .resend-code a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dark-mode .resend-code a {
+            color: #60a5fa;
+        }
+        
+        .resend-code a:hover {
+            text-decoration: underline;
+        }
+        
+        .countdown {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .dark-mode .countdown {
+            color: #60a5fa;
+        }
+        
+        .back-to-login {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+        
+        .dark-mode .back-to-login {
+            color: #9ca3af;
+        }
+        
+        .back-to-login a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dark-mode .back-to-login a {
+            color: #60a5fa;
+        }
+        
+        .back-to-login a:hover {
+            text-decoration: underline;
+        }
+        
+        .security-notice {
+            display: flex;
+            align-items: center;
+            background: #f9fafb;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .dark-mode .security-notice {
+            background: #374151;
+            color: #9ca3af;
+        }
+        
+        .security-notice i {
+            margin-right: 10px;
+            color: var(--success-color);
+        }
+        
+        .trust-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        
+        .trust-links a {
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .dark-mode .trust-links a {
+            color: #9ca3af;
+        }
+        
+        .trust-links a:hover {
+            text-decoration: underline;
+            color: var(--primary-color);
+        }
+        
+        .dark-mode .trust-links a:hover {
+            color: #60a5fa;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-selector select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .dark-mode .language-selector select {
+            background: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+        }
+        
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 120px;
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .dark-mode-toggle:after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--white);
+            top: 1px;
+            left: 1px;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background: var(--primary-color);
+        }
+        
+        body.dark-mode .dark-mode-toggle:after {
+            left: 21px;
+        }
+        
+        .dark-mode-label {
+            position: absolute;
+            top: 22px;
+            right: 165px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .dark-mode .dark-mode-label {
+            color: #9ca3af;
+        }
+        
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .help-button:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .auth-header-section {
+                padding: 20px;
+            }
+            
+            .auth-content {
+                padding: 20px;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .auth-header-section h2 {
+                font-size: 20px;
+            }
+            
+            .auth-header h1 {
+                font-size: 22px;
+            }
+            
+            .otp-input {
+                width: 40px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .dark-mode-toggle {
+                right: 100px;
+            }
+            
+            .dark-mode-label {
+                right: 145px;
+            }
+            
+            .language-selector {
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header-section">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line" style="color: #1a3a5f;"></i>
+                </div>
+                <div class="logo-text">Credora Wealth</div>
+            </div>
+            <h2>Secure Two-Factor Authentication</h2>
+            <p>Verify your identity with the 6-digit code sent to your email</p>
+            
+            <div class="language-selector">
+                <select id="languageSelect">
+                    <option value="en">EN</option>
+                    <option value="fr">FR</option>
+                    <option value="es">ES</option>
+                </select>
+            </div>
+            
+            <div class="dark-mode-label">Dark Mode</div>
+            <div class="dark-mode-toggle" id="darkModeToggle"></div>
+        </div>
+        
+        <div class="auth-content">
+            <div class="auth-header">
+                <h1>Verify Your Identity</h1>
+                <p>Enter the 6-digit code sent to resnicklisa783@gmail.com</p>
+            </div>
+            
+            <form class="auth-form" id="verifyForm">
+                <div class="form-group">
+                    <label for="otp">Verification Code</label>
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" id="otp1" maxlength="1" onkeyup="moveToNext(1, event)" autocomplete="off">
+                        <input type="text" class="otp-input" id="otp2" maxlength="1" onkeyup="moveToNext(2, event)" autocomplete="off">
+                        <input type="text" class="otp-input" id="otp3" maxlength="1" onkeyup="moveToNext(3, event)" autocomplete="off">
+                        <input type="text" class="otp-input" id="otp4" maxlength="1" onkeyup="moveToNext(4, event)" autocomplete="off">
+                        <input type="text" class="otp-input" id="otp5" maxlength="1" onkeyup="moveToNext(5, event)" autocomplete="off">
+                        <input type="text" class="otp-input" id="otp6" maxlength="1" onkeyup="moveToNext(6, event)" autocomplete="off">
+                    </div>
+                    <div class="error-message" id="otpError">Please enter a valid 6-digit code</div>
+                    <div class="success-message" id="successMessage">Verification successful! Redirecting...</div>
+                </div>
+                
+                <button type="submit" class="auth-button" id="verifyButton">
+                    <span class="button-spinner" id="buttonSpinner"></span>
+                    <span id="buttonText">Verify Code</span>
+                </button>
+                
+                <div class="resend-code">
+                    Didn't receive the code? <a href="#" id="resendLink">Resend code</a> <span id="countdown" class="countdown">(01:00)</span>
+                </div>
+            </form>
+            
+            <div class="back-to-login">
+                <a href="index.html" id="backToLogin"><i class="fas fa-arrow-left"></i> Back to login</a>
+            </div>
+            
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i>
+                <span>Two-factor authentication adds an extra layer of security to your account.</span>
+            </div>
+            
+            <div class="trust-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Compliance Info</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-button" id="helpButton">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <script>
+        // DOM elements
+        const verifyForm = document.getElementById('verifyForm');
+        const verifyButton = document.getElementById('verifyButton');
+        const buttonSpinner = document.getElementById('buttonSpinner');
+        const buttonText = document.getElementById('buttonText');
+        const resendLink = document.getElementById('resendLink');
+        const countdownElement = document.getElementById('countdown');
+        const backToLogin = document.getElementById('backToLogin');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const helpButton = document.getElementById('helpButton');
+        const languageSelect = document.getElementById('languageSelect');
+        const otpInputs = [
+            document.getElementById('otp1'),
+            document.getElementById('otp2'),
+            document.getElementById('otp3'),
+            document.getElementById('otp4'),
+            document.getElementById('otp5'),
+            document.getElementById('otp6')
+        ];
+
+        // Valid OTP codes from the provided list
+        const validOtpCodes = [
+            "482913", "750284", "619375", "203849", "957620", 
+            "184305", "836492", "472091", "510826", "398207",
+            "672519", "240681", "385097", "721640", "950813",
+            "603794", "827351", "419068", "265730", "738154",
+            "914207", "582930", "601842", "739615", "408297",
+            "962103", "851429", "370192", "698520", "204673",
+            "813906", "452781", "607193", "185624", "923057",
+            "364219", "870435", "246801", "519637", "832740",
+            "608214", "927135", "781062", "540918", "395082",
+            "216904", "804327", "153729", "609248", "372851",
+            "827064", "518390", "690432", "340195", "905218",
+            "781354", "204689", "639708", "804251", "925160",
+            "730492", "416807", "592084", "803127", "674918",
+            "209635", "510438", "982041", "345970", "621803",
+            "407251", "892037", "153604", "709582", "294180",
+            "637509", "581042", "963208", "431790", "720658",
+            "952304", "108642", "824309", "647283", "310498",
+            "726054", "508273", "193875", "670821", "245970",
+            "916530", "832107", "570248", "490163", "361802",
+            "274951", "830692", "509637", "764208", "183059",
+            "942806", "605381", "713209", "280634", "590428",
+            "182649", "931702", "672038", "405892", "852901",
+            "731690", "290745", "604812", "128639", "870245",
+            "349260", "581607", "260934", "798152", "530861",
+            "182504", "905637", "402896", "713508", "289054",
+            "607319", "943215", "216874", "732609", "580294",
+            "491706", "260895", "874320", "930158", "307642",
+            "759102", "184267", "612859", "829301", "405637",
+            "692083", "354291", "970628", "581432", "406197",
+            "293874", "762085", "541092", "803649", "196728",
+            "478203", "259867", "619703", "802594", "341987",
+            "926041", "503176", "781420", "296583", "840752",
+            "615309", "273968", "589420", "937216", "148205",
+            "620947", "381562", "970435", "405821", "269048",
+            "853720", "790624", "218690", "594301", "360982",
+            "481756", "230469", "856190", "420987", "913520",
+            "508621", "724059", "670492", "391286", "542091",
+            "918062", "304629", "781356", "629805", "437218",
+            "905264", "716038"
+        ];
+
+        // State variables
+        let countdown = 60;
+        let countdownInterval = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the countdown for resend code
+            startCountdown();
+            
+            // Check for dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Focus on the first OTP input
+            otpInputs[0].focus();
+        });
+
+        // Handle form submission
+        verifyForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get the full OTP code
+            const otpCode = otpInputs.map(input => input.value).join('');
+            
+            // Validate OTP
+            if (otpCode.length !== 6 || !/^\d+$/.test(otpCode)) {
+                document.getElementById('otpError').style.display = 'block';
+                return;
+            }
+            
+            // Hide error message
+            document.getElementById('otpError').style.display = 'none';
+            
+            // Show loading state
+            setLoadingState(true);
+            
+            // Check if OTP is valid
+            if (validOtpCodes.includes(otpCode)) {
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Redirect to home page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+            } else {
+                document.getElementById('otpError').textContent = 'Invalid verification code. Please try again.';
+                document.getElementById('otpError').style.display = 'block';
+                setLoadingState(false);
+            }
+        });
+
+        // Resend code functionality
+        resendLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // If countdown is still active, don't resend
+            if (countdown > 0) return;
+            
+            // Simulate resending code
+            alert('A new verification code has been sent to your email.');
+            
+            // Reset countdown
+            resetCountdown();
+        });
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', null);
+            }
+        });
+
+        // Language selector
+        languageSelect.addEventListener('change', function() {
+            alert(`Language changed to ${this.options[this.selectedIndex].text}`);
+        });
+
+        // Help button
+        helpButton.addEventListener('click', function() {
+            alert('Contact support at support@credora.com or call +1 (800) 123-4567');
+        });
+
+        // Helper functions
+        function moveToNext(currentIndex, event) {
+            const currentInput = otpInputs[currentIndex - 1];
+            const nextInput = otpInputs[currentIndex];
+            const previousInput = otpInputs[currentIndex - 2];
+            
+            // If backspace is pressed and current input is empty, move to previous
+            if (event.keyCode === 8 && currentInput.value === '' && previousInput) {
+                previousInput.focus();
+                return;
+            }
+            
+            // If a digit was entered, move to next input
+            if (currentInput.value.length === 1 && nextInput) {
+                nextInput.focus();
+            }
+            
+            // Auto-submit if all inputs are filled
+            if (currentIndex === 6 && currentInput.value.length === 1) {
+                const allFilled = otpInputs.every(input => input.value.length === 1);
+                if (allFilled) {
+                    verifyForm.dispatchEvent(new Event('submit'));
+                }
+            }
+        }
+        
+        function setLoadingState(isLoading) {
+            if (isLoading) {
+                verifyButton.disabled = true;
+                buttonSpinner.style.display = 'inline-block';
+                buttonText.textContent = 'Verifying...';
+            } else {
+                verifyButton.disabled = false;
+                buttonSpinner.style.display = 'none';
+                buttonText.textContent = 'Verify Code';
+            }
+        }
+        
+        function startCountdown() {
+            clearInterval(countdownInterval);
+            countdown = 60;
+            updateCountdown();
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                updateCountdown();
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+        
+        function resetCountdown() {
+            startCountdown();
+        }
+        
+        function updateCountdown() {
+            if (countdown > 0) {
+                const minutes = Math.floor(countdown / 60);
+                const seconds = countdown % 60;
+                countdownElement.textContent = `(${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
+                resendLink.style.pointerEvents = 'none';
+                resendLink.style.opacity = '0.5';
+            } else {
+                countdownElement.textContent = '';
+                resendLink.style.pointerEvents = 'auto';
+                resendLink.style.opacity = '1';
+            }
+        }
+    </script>
+</body>
+</html>
